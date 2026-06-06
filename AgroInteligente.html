@@ -553,7 +553,7 @@
     <div class="logo-area">
       <div class="logo-icon">🌿</div>
       <div class="logo-title">AgroInteligente</div>
-      <div class="logo-sub">Sistema de Gestão Rural com IA</div>
+      <div class="logo-sub">Sistema de Gestão Rural</div>
     </div>
     <div class="tab-row">
       <button class="tab-btn active" onclick="switchTab('login')">Entrar</button>
@@ -660,7 +660,7 @@
           </div>
           <div style="background:#fffde7;border-radius:10px;padding:1rem">
             <div style="font-weight:600;color:#7b4a00;margin-bottom:4px">4. Análise Completa</div>
-            <div style="font-size:13px;color:var(--texto-suave)">Gere a análise com IA e receba o plano de manejo completo.</div>
+            <div style="font-size:13px;color:var(--texto-suave)">Gere a análise e receba o plano de manejo completo.</div>
           </div>
         </div>
       </div>
@@ -1025,7 +1025,7 @@
     <!-- ANÁLISE COMPLETA -->
     <div id="section-analise" class="section">
       <div class="card">
-        <div class="card-title"><span>📊</span> Análise Completa com IA</div>
+        <div class="card-title"><span>📊</span> Análise Completa</div>
         <p style="font-size:14px;color:var(--texto-suave);margin-bottom:1rem">
           Preencha os dados nas seções anteriores e clique abaixo. <strong>Todos os dados serão salvos automaticamente</strong> ao gerar a análise.
         </p>
@@ -1033,7 +1033,7 @@
         <div id="analise-erros-form" class="alert alert-erro"></div>
         <div id="analise-aviso" class="alert alert-aviso"></div>
 
-        <button class="btn-analisar" onclick="gerarAnalise()">🚀 Gerar Análise Completa com IA</button>
+        <button class="btn-analisar" onclick="gerarAnalise()">🚀 Gerar Análise Completa</button>
 
         <div class="loading-wrap" id="loading-analise">
           <div class="spinner"></div>
@@ -1305,7 +1305,7 @@ function salvarTudo() {
   atualizarStats();
 }
 
-// ===== ANÁLISE COMPLETA (Motor de Regras) =====
+// ===== ANÁLISE COMPLETA =====
 function gerarAnalise() {
   salvarTudo();
   const d = currentUser?.dados || {};
@@ -1694,7 +1694,7 @@ function renderizarAnalise(a, d) {
     </div>
 
     <div style="text-align:center;padding:1rem;background:var(--verde-suave);border-radius:12px;margin-top:1rem">
-      <div style="font-size:13px;color:var(--texto-suave)">Relatório gerado pelo AgroInteligente com IA | ${new Date().toLocaleDateString('pt-BR')}</div>
+      <div style="font-size:13px;color:var(--texto-suave)">Relatório gerado pelo AgroInteligente | ${new Date().toLocaleDateString('pt-BR')}</div>
       <div style="font-size:12px;color:var(--texto-suave);margin-top:4px">Consulte sempre um Engenheiro Agrônomo para implementação técnica.</div>
     </div>
   `;
