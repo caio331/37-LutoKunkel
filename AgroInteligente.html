@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroInteligente — Gestão Rural Avançada</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde-escuro: #1a5c2a;
+    --verde-medio: #2e8b57;
+    --verde-claro: #4caf50;
+    --verde-suave: #e8f5e9;
+    --verde-menta: #a5d6a7;
+    --amarelo-ouro: #f9a825;
+    --amarelo-claro: #fff9e6;
+    --amarelo-borda: #f0c040;
+    --branco: #ffffff;
+    --cinza-claro: #f5f5f5;
+    --cinza-borda: #e0e0e0;
+    --texto-escuro: #1b2d1e;
+    --texto-medio: #3a5a3e;
+    --texto-suave: #6a8a6e;
+    --erro: #c62828;
+    --erro-bg: #ffebee    --sucesso: #1b5e20;
+    --sucesso-bg: #e8f5e9;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--branco);
+    color: var(--texto-escuro);
+    min-height: 100vh;
+  }
+
+  /* ===== LOGIN PAGE ===== */
+  #login-page {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a5c2a 0%, #2e8b57 50%, #f9a825 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .login-card {
+    background: var(--branco);
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+  }
+  .logo-area {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .logo-icon {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 32px;
+  }
+  .logo-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--verde-escuro);
+    font-weight: 700;
+  }
+  .logo-sub {
+    font-size: 13px;
+    color: var(--texto-suave);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+  .tab-row {
+    display: flex;
+    background: var(--cinza-claro);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 1.5rem;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--texto-suave);
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--branco);
+    color: var(--verde-escuro);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--texto-medio);
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: var(--texto-escuro);
+    background: var(--branco);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-input:focus { border-color: var(--verde-medio); }
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+    color: var(--branco);
+    border: none;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(46,139,87,0.35); }
+  .btn-primary:active { transform: translateY(0); }
+  .login-error {
+    background: var(--erro-bg);
+    border: 1px solid #ef9a9a;
+    color: var(--erro);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* ===== MAIN APP ===== */
+  #app-page { display: none; min-height: 100vh; background: #f0f4f0; }
+  .topbar {
+    background: linear-gradient(90deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    font-family: 'Playfair Display', serif;
+    color: var(--branco);
+    font-size: 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .user-badge {
+    background: rgba(255,255,255,0.15);
+    color: var(--branco);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .btn-logout {
+    background: rgba(255,255,255,0.15);
+    color: var(--branco);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    transition: background 0.2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+  .nav-tabs {
+    background: var(--branco);
+    border-bottom: 2px solid var(--cinza-borda);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--texto-suave);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-tab.active {
+    color: var(--verde-escuro);
+    border-bottom-color: var(--verde-medio);
+  }
+  .nav-tab:hover { color: var(--verde-medio); }
+
+  .main-content { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: var(--branco);
+    border-radius: 16px;
+    border: 1px solid var(--cinza-borda);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--verde-escuro);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title span { font-size: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; }
+  @media(max-width:700px) { .grid-2,.grid-3 { grid-template-columns: 1fr; } }
+
+  .field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--texto-medio);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .field-input, .field-select, .field-textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: var(--texto-escuro);
+    background: var(--branco);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field-input:focus, .field-select:focus, .field-textarea:focus { border-color: var(--verde-medio); }
+  .field-input.erro-field { border-color: var(--erro); background: #fff5f5; }
+  .field-textarea { resize: vertical; min-height: 80px; }
+
+  .btn-analisar {
+    background: linear-gradient(135deg, var(--amarelo-ouro), #e65100);
+    color: var(--branco);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 1rem;
+  }
+  .btn-analisar:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,168,37,0.4); }
+
+  .btn-verde {
+    background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+    color: var(--branco);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .btn-verde:hover { transform: translateY(-1px); }
+
+  /* Alerts */
+  .alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .alert.visible { display: block; }
+  .alert-erro {
+    background: var(--erro-bg);
+    border: 1px solid #ef9a9a;
+    color: var(--erro);
+  }
+  .alert-sucesso {
+    background: var(--sucesso-bg);
+    border: 1px solid var(--verde-menta);
+    color: var(--sucesso);
+  }
+  .alert-aviso {
+    background: var(--amarelo-claro);
+    border: 1px solid var(--amarelo-borda);
+    color: #7b4a00;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--verde-suave);
+    border: 1px solid var(--verde-menta);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--verde-escuro);
+    font-family: 'Playfair Display', serif;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--texto-suave);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .stat-amarelo { background: var(--amarelo-claro); border-color: var(--amarelo-borda); }
+  .stat-amarelo .stat-value { color: #7b4a00; }
+
+  /* Análise result */
+  .analise-result {
+    display: none;
+    margin-top: 1.5rem;
+  }
+  .analise-result.visible { display: block; }
+  .result-header {
+    background: linear-gradient(135deg, var(--verde-escuro), var(--verde-medio));
+    color: var(--branco);
+    padding: 1.5rem;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .result-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+  }
+  .result-body {
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 1.5rem;
+  }
+  .result-section { margin-bottom: 1.5rem; }
+  .result-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--verde-escuro);
+    border-left: 4px solid var(--amarelo-ouro);
+    padding-left: 10px;
+    margin-bottom: 10px;
+  }
+  .result-section p { font-size: 14px; color: var(--texto-medio); line-height: 1.7; margin-bottom: 6px; }
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-verde { background: var(--sucesso-bg); color: var(--sucesso); }
+  .badge-amarelo { background: var(--amarelo-claro); color: #7b4a00; }
+  .badge-vermelho { background: var(--erro-bg); color: var(--erro); }
+
+  /* pH Scale bar */
+  .ph-bar-wrap { margin: 12px 0; }
+  .ph-bar {
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #c62828, #e65100, #f9a825, #4caf50, #1a5c2a, #1565c0, #7b1fa2);
+    position: relative;
+  }
+  .ph-indicator {
+    position: absolute;
+    top: -6px;
+    width: 4px;
+    height: 28px;
+    background: var(--texto-escuro);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: left 0.5s ease;
+  }
+  .ph-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--texto-suave);
+    margin-top: 4px;
+  }
+
+  /* Progress bars */
+  .prog-wrap { margin: 8px 0; }
+  .prog-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--texto-medio); margin-bottom: 4px; }
+  .prog-bar { height: 10px; background: var(--cinza-claro); border-radius: 5px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 5px; background: var(--verde-medio); transition: width 0.8s ease; }
+  .prog-fill.amarelo { background: var(--amarelo-ouro); }
+  .prog-fill.vermelho { background: #e57373; }
+
+  /* Loading spinner */
+  .loading-wrap {
+    text-align: center;
+    padding: 2rem;
+    display: none;
+  }
+  .loading-wrap.visible { display: block; }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--verde-suave);
+    border-top-color: var(--verde-medio);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Erro fields list */
+  .erros-lista { list-style: none; padding: 0; }
+  .erros-lista li { padding: 4px 0; font-size: 13px; }
+  .erros-lista li::before { content: "⚠ "; color: var(--erro); }
+
+  .secao-clima {
+    background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
+    border: 1px solid #90caf9;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .clima-titulo { font-weight: 600; color: #0d47a1; font-size: 15px; margin-bottom: 6px; }
+  .clima-desc { font-size: 13px; color: #1a237e; line-height: 1.6; }
+
+  /* Culturas tags */
+  .culturas-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .cultura-tag {
+    background: var(--verde-suave);
+    border: 1px solid var(--verde-menta);
+    color: var(--verde-escuro);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cultura-tag:hover, .cultura-tag.selected {
+    background: var(--verde-escuro);
+    color: var(--branco);
+    border-color: var(--verde-escuro);
+  }
+
+  /* Microorganismos cards */
+  .micro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .micro-card {
+    background: linear-gradient(135deg, #f1f8e9, #e8f5e9);
+    border: 1px solid #c8e6c9;
+    border-radius: 12px;
+    padding: 1rem;
+  }
+  .micro-name { font-size: 14px; font-weight: 600; color: var(--verde-escuro); margin-bottom: 4px; }
+  .micro-desc { font-size: 12px; color: var(--texto-suave); line-height: 1.5; }
+  .micro-status { margin-top: 8px; }
+
+  /* Terços de produção */
+  .terco-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  @media(max-width:600px) { .terco-grid { grid-template-columns: 1fr; } }
+  .terco-card {
+    text-align: center;
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 2px solid;
+  }
+  .terco-1 { background: #e8f5e9; border-color: #4caf50; }
+  .terco-2 { background: #fff9c4; border-color: #f9a825; }
+  .terco-3 { background: #fce4ec; border-color: #e91e63; }
+  .terco-num { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; }
+  .terco-1 .terco-num { color: #1b5e20; }
+  .terco-2 .terco-num { color: #7b4a00; }
+  .terco-3 .terco-num { color: #880e4f; }
+  .terco-label { font-size: 12px; font-weight: 600; color: var(--texto-medio); margin-top: 4px; }
+  .terco-desc { font-size: 11px; color: var(--texto-suave); margin-top: 6px; line-height: 1.5; }
+
+  /* Welcome hero */
+  .hero-banner {
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 60%, var(--amarelo-ouro) 100%);
+    border-radius: 16px;
+    padding: 2.5rem;
+    color: var(--branco);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-banner::before {
+    content: '🌱';
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+    opacity: 0.2;
+  }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 8px; }
+  .hero-sub { font-size: 15px; opacity: 0.9; max-width: 500px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="logo-area">
+      <div class="logo-icon">🌿</div>
+      <div class="logo-title">AgroInteligente</div>
+      <div class="logo-sub">Sistema de Gestão Rural com IA</div>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('login')">Entrar</button>
+      <button class="tab-btn" onclick="switchTab('cadastro')">Cadastrar</button>
+    </div>
+
+    <div id="login-error" class="login-error"></div>
+
+    <!-- Login Form -->
+    <div id="form-login">
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input type="email" id="login-email" class="form-input" placeholder="seu@email.com.br">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" id="login-senha" class="form-input" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" onclick="fazerLogin()">Acessar o Sistema</button>
+    </div>
+
+    <!-- Cadastro Form -->
+    <div id="form-cadastro" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Nome do Agricultor</label>
+        <input type="text" id="cad-nome" class="form-input" placeholder="Ex: João Silva">
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input type="email" id="cad-email" class="form-input" placeholder="seu@email.com.br">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Usuário (login)</label>
+        <input type="text" id="cad-usuario" class="form-input" placeholder="Ex: joaosilva">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" id="cad-senha" class="form-input" placeholder="Mínimo 6 caracteres">
+      </div>
+      <button class="btn-primary" onclick="fazerCadastro()">Criar Conta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP PAGE ===== -->
+<div id="app-page">
+  <div class="topbar">
+    <div class="topbar-brand">🌿 AgroInteligente</div>
+    <div class="topbar-right">
+      <div class="user-badge" id="user-name-badge">👤 Agricultor</div>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('inicio')">🏠 Início</button>
+    <button class="nav-tab" onclick="showSection('propriedade')">🌾 Propriedade</button>
+    <button class="nav-tab" onclick="showSection('solo')">🧪 Análise de Solo</button>
+    <button class="nav-tab" onclick="showSection('culturas')">🌱 Culturas</button>
+    <button class="nav-tab" onclick="showSection('clima')">🌤 Climas</button>
+    <button class="nav-tab" onclick="showSection('analise')">📊 Análise Completa</button>
+  </div>
+
+  <div class="main-content">
+
+    <!-- INÍCIO -->
+    <div id="section-inicio" class="section active">
+      <div class="hero-banner">
+        <div class="hero-title">Bem-vindo ao AgroInteligente 🌱</div>
+        <div class="hero-sub">Preencha os dados da sua propriedade, solo e culturas para receber uma análise completa com recomendações personalizadas de manejo e produtividade.</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-ha">0</div>
+          <div class="stat-label">Hectares cadastrados</div>
+        </div>
+        <div class="stat-card stat-amarelo">
+          <div class="stat-value" id="stat-culturas">0</div>
+          <div class="stat-label">Culturas selecionadas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-ph">—</div>
+          <div class="stat-label">pH do solo</div>
+        </div>
+        <div class="stat-card stat-amarelo">
+          <div class="stat-value" id="stat-mo">0%</div>
+          <div class="stat-label">Matéria orgânica</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>📋</span> Como usar o sistema</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+          <div style="background:#f0f4f0;border-radius:10px;padding:1rem">
+            <div style="font-weight:600;color:var(--verde-escuro);margin-bottom:4px">1. Propriedade</div>
+            <div style="font-size:13px;color:var(--texto-suave)">Cadastre hectares e tipo de solo para recomendações personalizadas.</div>
+          </div>
+          <div style="background:#fffde7;border-radius:10px;padding:1rem">
+            <div style="font-weight:600;color:#7b4a00;margin-bottom:4px">2. Análise de Solo</div>
+            <div style="font-size:13px;color:var(--texto-suave)">Insira pH, P, Ca, Mg e microorganismos do seu laudo.</div>
+          </div>
+          <div style="background:#f0f4f0;border-radius:10px;padding:1rem">
+            <div style="font-weight:600;color:var(--verde-escuro);margin-bottom:4px">3. Culturas</div>
+            <div style="font-size:13px;color:var(--texto-suave)">Selecione as culturas do seu giro anual de plantio.</div>
+          </div>
+          <div style="background:#fffde7;border-radius:10px;padding:1rem">
+            <div style="font-weight:600;color:#7b4a00;margin-bottom:4px">4. Análise Completa</div>
+            <div style="font-size:13px;color:var(--texto-suave)">Gere a análise com IA e receba o plano de manejo completo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPRIEDADE -->
+    <div id="section-propriedade" class="section">
+      <div class="card">
+        <div class="card-title"><span>🌾</span> Dados da Propriedade</div>
+        <div class="grid-2">
+          <div>
+            <label class="field-label">Área total (hectares) *</label>
+            <input type="number" id="prop-ha" class="field-input" placeholder="Ex: 150" min="0.1" step="0.1" oninput="atualizarStats()">
+          </div>
+          <div>
+            <label class="field-label">Nome da propriedade / fazenda</label>
+            <input type="text" id="prop-nome" class="field-input" placeholder="Ex: Fazenda Boa Esperança">
+          </div>
+          <div>
+            <label class="field-label">Estado (UF)</label>
+            <select id="prop-uf" class="field-select">
+              <option value="">Selecione...</option>
+              <option>MT</option><option>MS</option><option>GO</option><option>PR</option>
+              <option>RS</option><option>SC</option><option>SP</option><option>MG</option>
+              <option>BA</option><option>TO</option><option>PA</option><option>RO</option>
+              <option>MA</option><option>PI</option><option>CE</option><option>Outro</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Tipo de relevo</label>
+            <select id="prop-relevo" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="plano">Plano (0-3%)</option>
+              <option value="suave">Suave ondulado (3-8%)</option>
+              <option value="ondulado">Ondulado (8-20%)</option>
+              <option value="forte">Forte ondulado (20-45%)</option>
+              <option value="montanhoso">Montanhoso (+45%)</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Sistema de plantio atual</label>
+            <select id="prop-sistema" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="direto">Plantio Direto</option>
+              <option value="convencional">Plantio Convencional</option>
+              <option value="misto">Sistema Misto</option>
+              <option value="transitando">Transitando para Plantio Direto</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Anos com plantio direto (se aplicável)</label>
+            <input type="number" id="prop-anos-pd" class="field-input" placeholder="Ex: 5" min="0">
+          </div>
+          <div>
+            <label class="field-label">Giro de culturas por ano</label>
+            <select id="prop-giro" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="1">1 safra/ano</option>
+              <option value="2">2 safras/ano (safrinha)</option>
+              <option value="3">3 safras/ano</option>
+              <option value="ipa">Sistema IPA (Integração Pecuária-Agricultura)</option>
+              <option value="ilpf">ILPF (Integração Lavoura-Pecuária-Floresta)</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Irrigação disponível?</label>
+            <select id="prop-irrigacao" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="nao">Não — sequeiro</option>
+              <option value="pivô">Sim — pivô central</option>
+              <option value="gotejo">Sim — gotejamento</option>
+              <option value="aspersao">Sim — aspersão</option>
+            </select>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- ANÁLISE DE SOLO -->
+    <div id="section-solo" class="section">
+      <div class="card">
+        <div class="card-title"><span>🧪</span> Dados do Laudo de Solo</div>
+        <p style="font-size:13px;color:var(--texto-suave);margin-bottom:1.25rem">Insira os dados do seu laudo de análise de solo. Os valores serão validados automaticamente.</p>
+
+        <div id="solo-alert-erro" class="alert alert-erro"></div>
+        <div id="solo-alert-ok" class="alert alert-sucesso"></div>
+
+        <div class="grid-3">
+          <div>
+            <label class="field-label">pH em CaCl₂ * <span style="color:var(--texto-suave);font-weight:400">(ideal: 5,5–6,5)</span></label>
+            <input type="number" id="solo-ph" class="field-input" placeholder="Ex: 5.8" step="0.1" min="3" max="9" oninput="atualizarStats()">
+          </div>
+          <div>
+            <label class="field-label">Matéria Orgânica (g/dm³) *</label>
+            <input type="number" id="solo-mo" class="field-input" placeholder="Ex: 28" step="0.1" min="0" oninput="atualizarStats()">
+          </div>
+          <div>
+            <label class="field-label">Fósforo P (mg/dm³) *</label>
+            <input type="number" id="solo-p" class="field-input" placeholder="Ex: 35" step="0.1" min="0">
+          </div>
+          <div>
+            <label class="field-label">Potássio K (cmolc/dm³) *</label>
+            <input type="number" id="solo-k" class="field-input" placeholder="Ex: 0.25" step="0.01" min="0">
+          </div>
+          <div>
+            <label class="field-label">Cálcio Ca (cmolc/dm³) *</label>
+            <input type="number" id="solo-ca" class="field-input" placeholder="Ex: 3.5" step="0.1" min="0">
+          </div>
+          <div>
+            <label class="field-label">Magnésio Mg (cmolc/dm³) *</label>
+            <input type="number" id="solo-mg" class="field-input" placeholder="Ex: 1.2" step="0.1" min="0">
+          </div>
+          <div>
+            <label class="field-label">Alumínio Al (cmolc/dm³)</label>
+            <input type="number" id="solo-al" class="field-input" placeholder="Ex: 0.0" step="0.01" min="0">
+          </div>
+          <div>
+            <label class="field-label">CTC total (cmolc/dm³)</label>
+            <input type="number" id="solo-ctc" class="field-input" placeholder="Ex: 8.5" step="0.1" min="0">
+          </div>
+          <div>
+            <label class="field-label">Saturação por bases V% </label>
+            <input type="number" id="solo-v" class="field-input" placeholder="Ex: 65" step="1" min="0" max="100">
+          </div>
+          <div>
+            <label class="field-label">Enxofre S (mg/dm³)</label>
+            <input type="number" id="solo-s" class="field-input" placeholder="Ex: 12" step="0.1" min="0">
+          </div>
+          <div>
+            <label class="field-label">Zinco Zn (mg/dm³)</label>
+            <input type="number" id="solo-zn" class="field-input" placeholder="Ex: 1.5" step="0.1" min="0">
+          </div>
+          <div>
+            <label class="field-label">Boro B (mg/dm³)</label>
+            <input type="number" id="solo-b" class="field-input" placeholder="Ex: 0.4" step="0.1" min="0">
+          </div>
+        </div>
+
+        <div style="margin-top:1.25rem">
+          <div class="card-title" style="font-size:16px"><span>🦠</span> Microorganismos Benéficos <span style="font-size:13px;font-weight:400;color:var(--texto-suave);font-family:Arial,sans-serif">(Opcional)</span></div>
+          <p style="font-size:13px;color:#7b4a00;background:var(--amarelo-claro);border:1px solid var(--amarelo-borda);border-radius:8px;padding:8px 12px;margin-bottom:1rem">ℹ️ Esta seção é <strong>opcional</strong>. Você pode pular o preenchimento dos microorganismos sem impactar a análise principal.</p>
+          <p style="font-size:13px;color:var(--texto-suave);margin-bottom:1rem">Caso possua informações, selecione os microorganismos presentes/inoculados no solo:</p>
+          <div class="micro-grid">
+            <div class="micro-card">
+              <div class="micro-name">Bradyrhizobium sp.</div>
+              <div class="micro-desc">Fixação biológica de N₂ para soja e leguminosas</div>
+              <div class="micro-status">
+                <select class="field-select" id="micro-bradyrhizobium" style="font-size:12px;padding:6px">
+                  <option value="">Status...</option>
+                  <option value="alto">Alto / Inoculado ✅</option>
+                  <option value="medio">Médio / Parcial</option>
+                  <option value="baixo">Baixo / Ausente</option>
+                </select>
+              </div>
+            </div>
+            <div class="micro-card">
+              <div class="micro-name">Azospirillum brasilense</div>
+              <div class="micro-desc">Promoção de crescimento, FBN em gramíneas</div>
+              <div class="micro-status">
+                <select class="field-select" id="micro-azospirillum" style="font-size:12px;padding:6px">
+                  <option value="">Status...</option>
+                  <option value="alto">Alto / Inoculado ✅</option>
+                  <option value="medio">Médio / Parcial</option>
+                  <option value="baixo">Baixo / Ausente</option>
+                </select>
+              </div>
+            </div>
+            <div class="micro-card">
+              <div class="micro-name">Micorrizas (FMA)</div>
+              <div class="micro-desc">Absorção de P, Ca e micronutrientes</div>
+              <div class="micro-status">
+                <select class="field-select" id="micro-micorrizas" style="font-size:12px;padding:6px">
+                  <option value="">Status...</option>
+                  <option value="alto">Alto / Inoculado ✅</option>
+                  <option value="medio">Médio / Parcial</option>
+                  <option value="baixo">Baixo / Ausente</option>
+                </select>
+              </div>
+            </div>
+            <div class="micro-card">
+              <div class="micro-name">Bacillus subtilis</div>
+              <div class="micro-desc">Biocontrole, solubilização de P e K</div>
+              <div class="micro-status">
+                <select class="field-select" id="micro-bacillus" style="font-size:12px;padding:6px">
+                  <option value="">Status...</option>
+                  <option value="alto">Alto / Inoculado ✅</option>
+                  <option value="medio">Médio / Parcial</option>
+                  <option value="baixo">Baixo / Ausente</option>
+                </select>
+              </div>
+            </div>
+            <div class="micro-card">
+              <div class="micro-name">Trichoderma spp.</div>
+              <div class="micro-desc">Biocontrole de fungos patogênicos</div>
+              <div class="micro-status">
+                <select class="field-select" id="micro-trichoderma" style="font-size:12px;padding:6px">
+                  <option value="">Status...</option>
+                  <option value="alto">Alto / Inoculado ✅</option>
+                  <option value="medio">Médio / Parcial</option>
+                  <option value="baixo">Baixo / Ausente</option>
+                </select>
+              </div>
+            </div>
+            <div class="micro-card">
+              <div class="micro-name">Actinomicetos</div>
+              <div class="micro-desc">Decomposição de matéria orgânica, antibióticos naturais</div>
+              <div class="micro-status">
+                <select class="field-select" id="micro-actino" style="font-size:12px;padding:6px">
+                  <option value="">Status...</option>
+                  <option value="alto">Alta população ✅</option>
+                  <option value="medio">Média população</option>
+                  <option value="baixo">Baixa população</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-verde" style="margin-top:1.25rem" onclick="validarSolo()">🔍 Validar & Confirmar Dados de Solo</button>
+      </div>
+    </div>
+
+    <!-- CULTURAS -->
+    <div id="section-culturas" class="section">
+      <div class="card">
+        <div class="card-title"><span>🌱</span> Seleção de Culturas</div>
+        <p style="font-size:13px;color:var(--texto-suave);margin-bottom:1rem">Selecione todas as culturas do seu giro anual de plantio:</p>
+
+        <div style="margin-bottom:1.5rem">
+          <label class="field-label">🌾 Grãos / Oleaginosas</label>
+          <div class="culturas-tags">
+            <span class="cultura-tag" onclick="toggleCultura(this,'soja')">🫘 Soja</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'milho')">🌽 Milho</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'trigo')">🌾 Trigo</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'arroz')">🍚 Arroz</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'feijao')">🫘 Feijão</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'girassol')">🌻 Girassol</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'canola')">🟡 Canola</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'sorgo')">🌾 Sorgo</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'amendoim')">🥜 Amendoim</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.5rem">
+          <label class="field-label">🌿 Pastagens / Cobertura</label>
+          <div class="culturas-tags">
+            <span class="cultura-tag" onclick="toggleCultura(this,'brachiaria')">🌿 Braquiária</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'milheto')">🌾 Milheto</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'crotalaria')">🌱 Crotalária</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'nabo')">🌱 Nabo forrageiro</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'aveia')">🌾 Aveia preta</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'azevem')">🌱 Azevém</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.5rem">
+          <label class="field-label">🥬 Hortaliças / Outros</label>
+          <div class="culturas-tags">
+            <span class="cultura-tag" onclick="toggleCultura(this,'cana')">🎋 Cana-de-açúcar</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'algodao')">🌸 Algodão</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'cafe')">☕ Café</span>
+            <span class="cultura-tag" onclick="toggleCultura(this,'milho_silagem')">🌽 Milho silagem</span>
+          </div>
+        </div>
+
+        <div style="background:var(--verde-suave);border-radius:10px;padding:1rem;margin-bottom:1.25rem">
+          <label class="field-label">Culturas selecionadas:</label>
+          <div id="culturas-selecionadas" style="font-size:14px;color:var(--verde-escuro);font-weight:500">Nenhuma selecionada ainda.</div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label class="field-label">Meta de produtividade — Soja (sc/ha)</label>
+            <input type="number" id="meta-soja" class="field-input" placeholder="Ex: 70" min="0" max="120">
+          </div>
+          <div>
+            <label class="field-label">Meta de produtividade — Milho (sc/ha)</label>
+            <input type="number" id="meta-milho" class="field-input" placeholder="Ex: 180" min="0" max="400">
+          </div>
+          <div>
+            <label class="field-label">Meta de produtividade — Trigo (sc/ha)</label>
+            <input type="number" id="meta-trigo" class="field-input" placeholder="Ex: 50" min="0" max="120">
+          </div>
+          <div>
+            <label class="field-label">Época de plantio preferencial</label>
+            <select id="epoca-plantio" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="outubro">Outubro (safra de verão)</option>
+              <option value="novembro">Novembro (safra de verão)</option>
+              <option value="dezembro">Dezembro (safrinha)</option>
+              <option value="janeiro">Janeiro (safrinha)</option>
+              <option value="abril">Abril-Maio (safra de inverno)</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CLIMA -->
+    <div id="section-clima" class="section">
+      <div class="card">
+        <div class="card-title"><span>🌤</span> Condições Climáticas</div>
+        <div class="grid-2">
+          <div>
+            <label class="field-label">Precipitação média anual (mm)</label>
+            <input type="number" id="clima-precip" class="field-input" placeholder="Ex: 1400" min="0">
+          </div>
+          <div>
+            <label class="field-label">Temperatura média anual (°C)</label>
+            <input type="number" id="clima-temp" class="field-input" placeholder="Ex: 24" step="0.1">
+          </div>
+          <div>
+            <label class="field-label">Fenômeno climático previsto</label>
+            <select id="clima-fenomeno" class="field-select" onchange="mostrarInfoClima()">
+              <option value="">Selecione...</option>
+              <option value="elnino">El Niño (seco no Norte/CO, chuvoso no Sul)</option>
+              <option value="lanina">La Niña (chuvas irregulares, seca no Sul)</option>
+              <option value="neutro">Neutro (normal)</option>
+              <option value="incerto">Incerto / não informado</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Risco de geada na região?</label>
+            <select id="clima-geada" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="nao">Sem risco</option>
+              <option value="baixo">Baixo (eventual)</option>
+              <option value="medio">Médio (inverno)</option>
+              <option value="alto">Alto (frequente)</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Déficit hídrico histórico?</label>
+            <select id="clima-deficit" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="nao">Não — boa distribuição</option>
+              <option value="leve">Leve — períodos curtos</option>
+              <option value="moderado">Moderado — 30-60 dias</option>
+              <option value="severo">Severo — +60 dias</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Risco de erosão hídrica?</label>
+            <select id="clima-erosao" class="field-select">
+              <option value="">Selecione...</option>
+              <option value="baixo">Baixo</option>
+              <option value="medio">Médio</option>
+              <option value="alto">Alto</option>
+              <option value="muito-alto">Muito alto</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="info-clima" style="margin-top:1.5rem;display:none"></div>
+
+
+      </div>
+    </div>
+
+    <!-- ANÁLISE COMPLETA -->
+    <div id="section-analise" class="section">
+      <div class="card">
+        <div class="card-title"><span>📊</span> Análise Completa com IA</div>
+        <p style="font-size:14px;color:var(--texto-suave);margin-bottom:1rem">
+          Preencha os dados nas seções anteriores e clique abaixo. <strong>Todos os dados serão salvos automaticamente</strong> ao gerar a análise.
+        </p>
+
+        <div id="analise-erros-form" class="alert alert-erro"></div>
+        <div id="analise-aviso" class="alert alert-aviso"></div>
+
+        <button class="btn-analisar" onclick="gerarAnalise()">🚀 Gerar Análise Completa com IA</button>
+
+        <div class="loading-wrap" id="loading-analise">
+          <div class="spinner"></div>
+          <div style="font-size:14px;color:var(--texto-suave)">Analisando dados com inteligência artificial...</div>
+        </div>
+
+        <div class="analise-result" id="resultado-analise">
+          <div class="result-header">
+            <span style="font-size:32px">📋</span>
+            <div>
+              <h2>Relatório Agronômico Completo</h2>
+              <div style="font-size:13px;opacity:0.85" id="result-data"></div>
+            </div>
+          </div>
+          <div class="result-body" id="result-body-content">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /app-page -->
+
+<script>
+// ===== STATE =====
+let usuarios = JSON.parse(localStorage.getItem('agro_usuarios') || '{}');
+let currentUser = null;
+let culturasSelecionadas = [];
+
+// ===== LOGIN =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='cadastro')));
+  document.getElementById('form-login').style.display = tab==='login'?'block':'none';
+  document.getElementById('form-cadastro').style.display = tab==='cadastro'?'block':'none';
+  document.getElementById('login-error').style.display='none';
+}
+
+function mostrarErroLogin(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function fazerCadastro() {
+  const nome = document.getElementById('cad-nome').value.trim();
+  const email = document.getElementById('cad-email').value.trim();
+  const usuario = document.getElementById('cad-usuario').value.trim();
+  const senha = document.getElementById('cad-senha').value;
+  if (!nome||!email||!usuario||!senha) return mostrarErroLogin('⚠ Preencha todos os campos.');
+  if (senha.length < 6) return mostrarErroLogin('⚠ Senha deve ter no mínimo 6 caracteres.');
+  if (usuarios[email]) return mostrarErroLogin('⚠ Este e-mail já está cadastrado.');
+  usuarios[email] = { nome, email, usuario, senha, dados:{} };
+  localStorage.setItem('agro_usuarios', JSON.stringify(usuarios));
+  mostrarErroLogin('');
+  document.getElementById('login-error').style.display='none';
+  switchTab('login');
+  document.getElementById('login-email').value = email;
+  alert('✅ Cadastro realizado! Faça login para continuar.');
+}
+
+function fazerLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  if (!email||!senha) return mostrarErroLogin('⚠ Preencha e-mail e senha.');
+  const u = usuarios[email];
+  if (!u) return mostrarErroLogin('⚠ E-mail não cadastrado.');
+  if (u.senha !== senha) return mostrarErroLogin('⚠ Senha incorreta.');
+  currentUser = u;
+  document.getElementById('user-name-badge').textContent = '👤 ' + u.nome;
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('app-page').style.display = 'block';
+  carregarDadosSalvos();
+}
+
+function fazerLogout() {
+  currentUser = null;
+  culturasSelecionadas = [];
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('app-page').style.display = 'none';
+  document.getElementById('resultado-analise').classList.remove('visible');
+}
+
+// ===== NAVEGAÇÃO =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== PROPRIEDADE =====
+function salvarPropriedade() {
+  if (!currentUser) return;
+  currentUser.dados.propriedade = {
+    ha: document.getElementById('prop-ha').value,
+    nome: document.getElementById('prop-nome').value,
+    uf: document.getElementById('prop-uf').value,
+    relevo: document.getElementById('prop-relevo').value,
+    sistema: document.getElementById('prop-sistema').value,
+    anosPD: document.getElementById('prop-anos-pd').value,
+    giro: document.getElementById('prop-giro').value,
+    irrigacao: document.getElementById('prop-irrigacao').value,
+  };
+  salvarNoStorage();
+  const msg = document.getElementById('prop-msg');
+  msg.classList.add('visible');
+  setTimeout(() => msg.classList.remove('visible'), 3000);
+  atualizarStats();
+}
+
+// ===== SOLO =====
+function validarSolo() {
+  const ph = parseFloat(document.getElementById('solo-ph').value);
+  const mo = parseFloat(document.getElementById('solo-mo').value);
+  const p = parseFloat(document.getElementById('solo-p').value);
+  const k = parseFloat(document.getElementById('solo-k').value);
+  const ca = parseFloat(document.getElementById('solo-ca').value);
+  const mg = parseFloat(document.getElementById('solo-mg').value);
+  const al = parseFloat(document.getElementById('solo-al').value||0);
+  const v = parseFloat(document.getElementById('solo-v').value);
+  const ctc = parseFloat(document.getElementById('solo-ctc').value);
+
+  const erros = [];
+  const avisos = [];
+
+  if (isNaN(ph)||isNaN(mo)||isNaN(p)||isNaN(ca)||isNaN(mg)||isNaN(k)) {
+    erros.push('Preencha todos os campos obrigatórios (pH, MO, P, K, Ca, Mg).');
+  } else {
+    // Validações cruzadas
+    if (ph < 4.0 || ph > 9.0) erros.push('pH fora do intervalo possível (4,0–9,0). Verifique o dado.');
+    if (ph < 4.5 && al < 0.5) erros.push('pH muito ácido ('+ph+') mas Al³⁺ zerado — dados inconsistentes. Em pH < 4,5, alumínio tóxico costuma estar acima de 0,5 cmolc/dm³.');
+    if (ph > 7.0 && al > 0) erros.push('pH alcalino ('+ph+') com alumínio tóxico ('+al+') — inconsistência. Em pH > 7,0, o Al precipita e não ocorre toxidez.');
+    if (ph < 5.0 && ca > 4.0) erros.push('pH muito ácido ('+ph+') com Ca alto ('+ca+' cmolc) — dados inconsistentes. Em solos muito ácidos, o cálcio tende a ser baixo.');
+    if (ph > 6.5 && mg < 0.4) erros.push('pH corrigido ('+ph+') com Mg muito baixo ('+mg+') — provável deficiência ou dado incorreto.');
+    if (!isNaN(v) && !isNaN(ctc)) {
+      if (v > 100 || v < 0) erros.push('Saturação por bases V% deve estar entre 0 e 100%.');
+      const vCalculado = ((ca+mg+k)/(ctc||1))*100;
+      if (Math.abs(vCalculado - v) > 20 && ctc > 0) avisos.push('V% informado ('+v.toFixed(0)+'%) difere do calculado pelos cátions ('+vCalculado.toFixed(0)+'%). Confira o laudo.');
+    }
+    if (mo < 5) avisos.push('Matéria orgânica muito baixa ('+mo+' g/dm³) — solo degradado. Necessita urgente reposição com cobertura vegetal.');
+    if (ph >= 5.0 && ph <= 6.5 && mo >= 20 && ca >= 2.0 && mg >= 0.8 && p >= 20) avisos.push('✅ Dados consistentes! Solo com potencial produtivo bom.');
+  }
+
+  const erroEl = document.getElementById('solo-alert-erro');
+  const okEl = document.getElementById('solo-alert-ok');
+
+  if (erros.length > 0) {
+    erroEl.innerHTML = '<strong>❌ Erros encontrados — revise os dados:</strong><ul class="erros-lista" style="margin-top:8px">' + erros.map(e=>`<li>${e}</li>`).join('') + '</ul>';
+    erroEl.classList.add('visible');
+    okEl.classList.remove('visible');
+  } else {
+    erroEl.classList.remove('visible');
+    okEl.innerHTML = '✅ Dados de solo validados com sucesso!' + (avisos.length ? '<br><br>⚠ <strong>Avisos:</strong><br>' + avisos.join('<br>') : '');
+    okEl.classList.add('visible');
+    // Salvar
+    currentUser.dados.solo = { ph, mo, p, k, ca, mg, al, v, ctc,
+      s: parseFloat(document.getElementById('solo-s').value||0),
+      zn: parseFloat(document.getElementById('solo-zn').value||0),
+      b: parseFloat(document.getElementById('solo-b').value||0),
+      microorganismos: {
+        bradyrhizobium: document.getElementById('micro-bradyrhizobium').value,
+        azospirillum: document.getElementById('micro-azospirillum').value,
+        micorrizas: document.getElementById('micro-micorrizas').value,
+        bacillus: document.getElementById('micro-bacillus').value,
+        trichoderma: document.getElementById('micro-trichoderma').value,
+        actino: document.getElementById('micro-actino').value
+      }
+    };
+    salvarNoStorage();
+    atualizarStats();
+  }
+}
+
+// ===== CULTURAS =====
+function toggleCultura(el, nome) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (!culturasSelecionadas.includes(nome)) culturasSelecionadas.push(nome);
+  } else {
+    culturasSelecionadas = culturasSelecionadas.filter(c => c !== nome);
+  }
+  const labelMap = {soja:'Soja',milho:'Milho',trigo:'Trigo',arroz:'Arroz',feijao:'Feijão',girassol:'Girassol',canola:'Canola',sorgo:'Sorgo',amendoim:'Amendoim',brachiaria:'Braquiária',milheto:'Milheto',crotalaria:'Crotalária',nabo:'Nabo forrageiro',aveia:'Aveia preta',azevem:'Azevém',cana:'Cana-de-açúcar',algodao:'Algodão',cafe:'Café',milho_silagem:'Milho silagem'};
+  const div = document.getElementById('culturas-selecionadas');
+  div.textContent = culturasSelecionadas.length ? culturasSelecionadas.map(c=>labelMap[c]||c).join(', ') : 'Nenhuma selecionada ainda.';
+  atualizarStats();
+}
+
+function salvarCulturas() {
+  if (!currentUser) return;
+  currentUser.dados.culturas = {
+    lista: culturasSelecionadas,
+    metaSoja: document.getElementById('meta-soja').value,
+    metaMilho: document.getElementById('meta-milho').value,
+    metaTrigo: document.getElementById('meta-trigo').value,
+    epoca: document.getElementById('epoca-plantio').value
+  };
+  salvarNoStorage();
+  const msg = document.getElementById('cult-msg');
+  msg.classList.add('visible');
+  setTimeout(() => msg.classList.remove('visible'), 3000);
+  atualizarStats();
+}
+
+// ===== CLIMA =====
+function mostrarInfoClima() {
+  const v = document.getElementById('clima-fenomeno').value;
+  const el = document.getElementById('info-clima');
+  const infos = {
+    elnino: { titulo:'☀️ El Niño — O que esperar?', desc:'El Niño aquece as águas do Pacífico Equatorial, causando chuvas acima do normal no Sul do Brasil (RS, SC, PR) e seca no Norte e Centro-Oeste. No Sul: risco de excesso hídrico, doenças fúngicas, atraso de colheita. No CO/Norte: veranicos prolongados e queda de produtividade. Manejo: plantio mais cedo no Sul, ajuste de cultivares resistentes a chuva e frio.' },
+    lanina: { titulo:'🌧 La Niña — O que esperar?', desc:'La Niña esfria o Pacífico, causando secas prolongadas no Sul e excesso de chuva no Norte. Risco elevado de déficit hídrico no RS, SC e PR durante a floração da soja e enchimento de grãos. Manejo: cultivares de ciclo mais curto, plantio antecipado para fugir do veranico, maior atenção ao estoque de água no solo.' },
+    neutro: { titulo:'🌤 Ano Neutro — Condições Normais', desc:'Sem influência de El Niño ou La Niña. Chuvas tendem a seguir a climatologia histórica. Menor risco de extremos, mas acompanhe previsões regionais. Manejo: seguir o calendário padrão da região, foco na qualidade do solo e cobertura.' },
+    incerto: { titulo:'❓ Cenário climático incerto', desc:'Não há previsão definida. Recomenda-se monitorar o INMET, Embrapa e CPTEC/INPE semanalmente. Adotar cultivares de maior estabilidade e manter cobertura morta para conservar a umidade do solo.' }
+  };
+  if (infos[v]) {
+    el.innerHTML = `<div class="secao-clima"><div class="clima-titulo">${infos[v].titulo}</div><div class="clima-desc">${infos[v].desc}</div></div>`;
+    el.style.display='block';
+  } else { el.style.display='none'; }
+}
+
+function salvarClima() {
+  if (!currentUser) return;
+  currentUser.dados.clima = {
+    precip: document.getElementById('clima-precip').value,
+    temp: document.getElementById('clima-temp').value,
+    fenomeno: document.getElementById('clima-fenomeno').value,
+    geada: document.getElementById('clima-geada').value,
+    deficit: document.getElementById('clima-deficit').value,
+    erosao: document.getElementById('clima-erosao').value
+  };
+  salvarNoStorage();
+  const msg = document.getElementById('clima-msg');
+  msg.classList.add('visible');
+  setTimeout(() => msg.classList.remove('visible'), 3000);
+}
+
+// ===== SALVAR TUDO =====
+function salvarTudo() {
+  if (!currentUser) return;
+  // Salvar propriedade
+  currentUser.dados.propriedade = {
+    ha: document.getElementById('prop-ha').value,
+    nome: document.getElementById('prop-nome').value,
+    uf: document.getElementById('prop-uf').value,
+    relevo: document.getElementById('prop-relevo').value,
+    sistema: document.getElementById('prop-sistema').value,
+    anosPD: document.getElementById('prop-anos-pd').value,
+    giro: document.getElementById('prop-giro').value,
+    irrigacao: document.getElementById('prop-irrigacao').value
+  };
+  // Salvar culturas
+  currentUser.dados.culturas = {
+    lista: culturasSelecionadas,
+    metaSoja: document.getElementById('meta-soja').value,
+    metaMilho: document.getElementById('meta-milho').value,
+    metaTrigo: document.getElementById('meta-trigo').value,
+    epoca: document.getElementById('epoca-plantio').value
+  };
+  // Salvar clima
+  currentUser.dados.clima = {
+    precip: document.getElementById('clima-precip').value,
+    temp: document.getElementById('clima-temp').value,
+    fenomeno: document.getElementById('clima-fenomeno').value,
+    geada: document.getElementById('clima-geada').value,
+    deficit: document.getElementById('clima-deficit').value,
+    erosao: document.getElementById('clima-erosao').value
+  };
+  // Solo já é salvo pelo validarSolo()
+  salvarNoStorage();
+  atualizarStats();
+}
+
+// ===== ANÁLISE COMPLETA (Motor de Regras) =====
+function gerarAnalise() {
+  salvarTudo();
+  const d = currentUser?.dados || {};
+  const erros = [];
+  if (!d.propriedade?.ha) erros.push('Dados da propriedade (hectares) não preenchidos.');
+  if (!d.solo?.ph) erros.push('Dados de solo não validados. Vá em "Análise de Solo" e clique em Validar.');
+  if (!d.culturas?.lista?.length) erros.push('Culturas não selecionadas. Vá em "Culturas" e salve a seleção.');
+
+  const erroEl = document.getElementById('analise-erros-form');
+  if (erros.length) {
+    erroEl.innerHTML = '<strong>⚠ Complete antes de gerar a análise:</strong><ul class="erros-lista" style="margin-top:8px">' + erros.map(e=>`<li>${e}</li>`).join('') + '</ul>';
+    erroEl.classList.add('visible');
+    return;
+  }
+  erroEl.classList.remove('visible');
+  document.getElementById('loading-analise').classList.add('visible');
+  document.getElementById('resultado-analise').classList.remove('visible');
+  setTimeout(() => {
+    const analise = analisarPorRegras(d);
+    document.getElementById('loading-analise').classList.remove('visible');
+    renderizarAnalise(analise, d);
+  }, 800);
+}
+
+function analisarPorRegras(d) {
+  const s = d.solo || {};
+  const p = d.propriedade || {};
+  const c = d.culturas || {};
+  const cl = d.clima || {};
+  const micro = s.microorganismos || {};
+
+  const ph = parseFloat(s.ph) || 6.0;
+  const mo = parseFloat(s.mo) || 0;
+  const phos = parseFloat(s.p) || 0;
+  const k = parseFloat(s.k) || 0;
+  const ca = parseFloat(s.ca) || 0;
+  const mg = parseFloat(s.mg) || 0;
+  const al = parseFloat(s.al) || 0;
+  const ctc = parseFloat(s.ctc) || 0;
+  const relevo = p.relevo || 'plano';
+  const sistema = p.sistema || 'direto';
+  const uf = p.uf || '';
+  const culturas = c.lista || [];
+  const fenomeno = cl.fenomeno || 'neutro';
+
+  // pH
+  let classificacao_ph, ph_comentario, calcario_recomendado, calcario_tipo;
+  if (ph < 4.5) {
+    classificacao_ph = 'Muito Ácido';
+    ph_comentario = `pH ${ph} é muito ácido, causando toxidez por alumínio e manganês, e bloqueando a absorção de fósforo, cálcio e magnésio. Correção urgente necessária.`;
+    const dose = Math.max(Math.round(((6.0-ph)*1.5*(ctc||8))/10)*10, 2000);
+    calcario_recomendado = `${dose} kg/ha`;
+    calcario_tipo = 'Calcário dolomítico (PRNT ≥ 80%) para corrigir Ca e Mg simultaneamente';
+  } else if (ph < 5.5) {
+    classificacao_ph = 'Ácido';
+    ph_comentario = `pH ${ph} está abaixo do ideal (5,5–6,5). Recomenda-se calagem para aumentar disponibilidade de nutrientes e reduzir toxidez de Al³⁺.`;
+    const dose = Math.max(Math.round(((5.8-ph)*1.2*(ctc||8))/10)*10, 1000);
+    calcario_recomendado = `${dose} kg/ha`;
+    calcario_tipo = 'Calcário dolomítico ou calcítico conforme relação Ca/Mg do laudo';
+  } else if (ph <= 6.5) {
+    classificacao_ph = 'Adequado';
+    ph_comentario = `pH ${ph} está na faixa ideal para a maioria das culturas. Manter com calcário de manutenção a cada 2–3 anos.`;
+    calcario_recomendado = 'Manutenção: 500–800 kg/ha a cada 2 anos';
+    calcario_tipo = 'Calcário dolomítico para manutenção dos níveis de Ca e Mg';
+  } else if (ph <= 7.5) {
+    classificacao_ph = 'Levemente Alcalino';
+    ph_comentario = `pH ${ph} levemente alcalino. Pode limitar absorção de Zn, Fe, Mn e B. Evite novas calagens e monitore micronutrientes.`;
+    calcario_recomendado = 'Não necessário no momento';
+    calcario_tipo = 'Evitar calagem — verificar possível excesso anterior';
+  } else {
+    classificacao_ph = 'Alcalino';
+    ph_comentario = `pH ${ph} alcalino, dificultando absorção de micronutrientes. Verifique excesso de calcário ou influência da água de irrigação.`;
+    calcario_recomendado = 'Não aplicar calcário';
+    calcario_tipo = 'Avaliar uso de enxofre elementar ou gesso agrícola';
+  }
+
+  // Fósforo
+  let status_fosforo, recomendacao_fosforo;
+  if (phos < 10) {
+    status_fosforo = 'Baixo';
+    recomendacao_fosforo = `Fósforo crítico (${phos} mg/dm³). Aplicar 80–120 kg P₂O₅/ha no sulco + 40 kg/ha em cobertura para soja. Priorize MAP ou superfosfato triplo.`;
+  } else if (phos < 25) {
+    status_fosforo = 'Médio';
+    recomendacao_fosforo = `Fósforo em construção (${phos} mg/dm³). Aplicar 60–80 kg P₂O₅/ha para manutenção e construção gradual da reserva.`;
+  } else if (phos < 50) {
+    status_fosforo = 'Alto';
+    recomendacao_fosforo = `Fósforo adequado (${phos} mg/dm³). Manter adubação de manutenção de 40–60 kg P₂O₅/ha conforme exportação da cultura.`;
+  } else {
+    status_fosforo = 'Muito Alto';
+    recomendacao_fosforo = `Fósforo muito alto (${phos} mg/dm³). Reduzir ou suspender adubação fosfatada por 1–2 safras. Risco de antagonismo com Zn e Fe.`;
+  }
+
+  // Ca e Mg
+  const status_calcio = ca < 2.0 ? 'Baixo' : ca > 5.0 ? 'Alto' : 'Adequado';
+  const status_magnesio = mg < 0.5 ? 'Baixo' : mg > 2.0 ? 'Alto' : 'Adequado';
+  let relacao_caMg = 'Mg não informado';
+  if (mg > 0) {
+    const r = ca/mg;
+    const rStr = r.toFixed(1);
+    if (r < 2) relacao_caMg = `Ca:Mg = ${rStr}:1 — abaixo de 2:1, considerar calcário calcítico para elevar Ca.`;
+    else if (r > 6) relacao_caMg = `Ca:Mg = ${rStr}:1 — acima de 6:1, risco de deficiência de Mg. Aplicar calcário dolomítico ou sulfato de Mg.`;
+    else relacao_caMg = `Ca:Mg = ${rStr}:1 — dentro do intervalo ideal (2:1 a 6:1).`;
+  }
+
+  // Matéria Orgânica
+  let materia_organica_status, cobertura_recomendada;
+  if (mo < 10) {
+    materia_organica_status = 'Muito baixa';
+    cobertura_recomendada = `MO crítica (${mo} g/dm³). Prioridade máxima para cobertura vegetal. Rotacionar: Braquiária (3–6 t MS/ha), Crotalária juncea (fixação N), Milheto (raiz profunda). Evitar queima e revolvimento do solo.`;
+  } else if (mo < 20) {
+    materia_organica_status = 'Baixa';
+    cobertura_recomendada = `MO em construção (${mo} g/dm³). Consórcio de coberturas: Aveia preta + Nabo forrageiro no inverno; Milheto + Crotalária no verão. Meta: atingir 25 g/dm³ em 3 anos.`;
+  } else if (mo < 35) {
+    materia_organica_status = 'Média';
+    cobertura_recomendada = `MO em nível médio (${mo} g/dm³). Manter rotação gramíneas + leguminosas. Aveia + nabo no inverno, milho safrinha com palhada generosa.`;
+  } else {
+    materia_organica_status = 'Alta';
+    cobertura_recomendada = `MO excelente (${mo} g/dm³). Manter o sistema atual. Nunca deixar solo descoberto.`;
+  }
+
+  // Plantio Direto
+  const anosPD = parseInt(p.anosPD) || 0;
+  let plantio_direto_obs;
+  if (sistema === 'convencional') plantio_direto_obs = 'Sistema convencional em uso. Recomenda-se transição para plantio direto em 2–3 anos com subsolagem profunda e manutenção de palhada.';
+  else if (sistema === 'transitando') plantio_direto_obs = 'Em transição para PD — fase crítica. Manter palhada mínima de 6 t/ha e evitar revolvimento desnecessário.';
+  else if (anosPD < 3) plantio_direto_obs = `Plantio direto iniciante (${anosPD} anos). Benefícios consolidam-se após 5–7 anos. Persista e aumente diversidade de coberturas.`;
+  else if (anosPD < 8) plantio_direto_obs = `Plantio direto em consolidação (${anosPD} anos). Biologia do solo melhorando. Aumentar diversidade de espécies na rotação.`;
+  else plantio_direto_obs = `Plantio direto consolidado (${anosPD} anos). Sistema estabilizado. Foco em diversidade de coberturas e integração lavoura-pecuária.`;
+
+  // Erosão
+  const relevoMap = {plano:0,suave:1,ondulado:2,forte:3,montanhoso:4};
+  const erosaoScore = (relevoMap[relevo]||0) + (mo<15?1:0) + (sistema==='convencional'?2:0);
+  let erosao_risco, erosao_prevencao;
+  if (erosaoScore >= 4) { erosao_risco='Alto'; erosao_prevencao='Risco crítico. Implantar terraços e curvas de nível urgente. Manter 100% de cobertura. Evitar tráfego pesado em épocas chuvosas.'; }
+  else if (erosaoScore >= 2) { erosao_risco='Médio'; erosao_prevencao='Risco moderado. Palhada mínima de 6 t/ha. Plantio em curvas de nível. Evitar solo descoberto no período chuvoso.'; }
+  else { erosao_risco='Baixo'; erosao_prevencao='Baixo risco com sistema atual. Manter cobertura vegetal e palhada adequada.'; }
+
+  // Microorganismos
+  const microAtivos = Object.values(micro).filter(v=>v==='alto').length;
+  const microParcial = Object.values(micro).filter(v=>v==='medio').length;
+  let microorganismos_analise;
+  if (microAtivos>=4) microorganismos_analise=`Biologia do solo excelente — ${microAtivos} grupos de microrganismos em nível alto. Solo biologicamente ativo com boa ciclagem de nutrientes.`;
+  else if (microAtivos+microParcial>=3) microorganismos_analise=`Biologia do solo intermediária: ${microAtivos} grupos altos, ${microParcial} parciais. Há espaço para melhorar com inoculações e cobertura vegetal.`;
+  else microorganismos_analise='Biologia do solo baixa ou não informada. Plano de recuperação biológica recomendado com inoculantes e diversidade de coberturas.';
+  const inocList=[];
+  if(!micro.bradyrhizobium||micro.bradyrhizobium==='baixo') inocList.push('Bradyrhizobium (obrigatório para soja — economia de 60–80 kg N/ha)');
+  if(!micro.azospirillum||micro.azospirillum==='baixo') inocList.push('Azospirillum brasilense (milho/trigo — +10–15% produtividade)');
+  if(!micro.micorrizas||micro.micorrizas==='baixo') inocList.push('Micorrizas FMA (melhora absorção de P e Zn)');
+  if(!micro.trichoderma||micro.trichoderma==='baixo') inocList.push('Trichoderma spp. (biocontrole de Sclerotinia e Fusarium)');
+  const inoculantes_recomendados = inocList.length ? inocList.join('; ') : 'Manter inoculações atuais. Reavaliar a cada safra.';
+
+  // Clima
+  const climaMap = {
+    elnino:`El Niño previsto para ${uf||'sua região'}: no Sul (RS/SC/PR) espera-se excesso hídrico, favorecendo doenças fúngicas e atraso de colheita. No Cerrado/Norte: seca severa.`,
+    lanina:`La Niña prevista: risco de veranico severo no Sul durante jan-fev, período crítico de floração da soja. Déficit hídrico pode comprometer 15–30% da produtividade.`,
+    neutro:`Ano neutro: condições climáticas seguem a climatologia histórica de ${uf||'sua região'}. Menores riscos de extremos — monitorar boletins do INMET e CPTEC regionalmente.`,
+    incerto:'Cenário climático indefinido. Monitorar INMET, Embrapa e CPTEC semanalmente. Privilegiar cultivares de maior estabilidade produtiva.'
+  };
+  const clima_impacto = climaMap[fenomeno]||climaMap.neutro;
+  const manejos_especiais_clima = fenomeno==='elnino' ? 'Antecipar colheita, usar fungicidas preventivos para doenças de final de ciclo. Drenar áreas com acúmulo de água.' : fenomeno==='lanina' ? 'Antecipar o plantio para fugir do veranico em jan-fev. Cultivares de ciclo precoce. Irrigação suplementar se disponível.' : 'Seguir calendário regional padrão. Atenção a pragas e doenças no período úmido.';
+
+  // Culturas e Giro
+  const culturasOrdem = [...culturas.filter(cu=>['soja','milho','trigo','aveia','crotalaria','milheto'].includes(cu)), ...culturas.filter(cu=>!['soja','milho','trigo','aveia','crotalaria','milheto'].includes(cu))];
+  const giro = p.giro || '1';
+  const giroMap = {
+    ilpf:'Sistema ILPF: integrar pastagem (Brachiaria brizantha) nas entrelinhas durante o entressafra, com corte para palhada antes da semeadura. Excelente para MO e diversidade biológica.',
+    '2':'Duas safras/ano: Soja safra (out-mar) → Milho safrinha (fev-jul) ou Trigo (abr-set). Manter cobertura com aveia preta ou braquiária entre ciclos.',
+    '3':'Três safras: atenção para não esgotar a biologia com revolvimento. Usar coberturas nos intervalos.',
+    '1':'Uma safra principal. Usar entressafra para coberturas de inverno (aveia + nabo) ou verão (milheto + crotalária).'
+  };
+  const giro_sugerido = giroMap[giro]||giroMap['1'];
+
+  // Adubação
+  const adubacao_nitrogenio = culturas.includes('soja') ? `Soja: fixação biológica com Bradyrhizobium supre 200–300 kg N/ha. Não aplicar N mineral na semeadura (compete com FBN). ${culturas.includes('milho')?'Milho: 30 kg N/ha na base + 80–120 kg N/ha em cobertura (V4–V6).':''}` : 'Aplicar N conforme exportação da cultura. Consultar tabela de recomendação da EMBRAPA.';
+  const adubacao_fosforo = recomendacao_fosforo + ' Fontes: MAP (11-52-0), Superfosfato Triplo (0-45-0) ou Fosfato reativo para solos com MO > 25 g/dm³.';
+  const adubacao_potassio = k<0.15 ? `Potássio baixo (${k} cmolc/dm³). Aplicar 80–100 kg K₂O/ha. Fonte: KCl (0-0-60). Em solos arenosos, parcelar em 2x.` : k<0.30 ? `Potássio médio (${k} cmolc/dm³). Aplicar 60–80 kg K₂O/ha de manutenção.` : `Potássio adequado (${k} cmolc/dm³). Manutenção: 40–60 kg K₂O/ha.`;
+  const s_val=parseFloat(d.solo?.s)||0, zn_val=parseFloat(d.solo?.zn)||0, b_val=parseFloat(d.solo?.b)||0;
+  const micronutObs=[];
+  if(s_val<10) micronutObs.push('Enxofre baixo — aplicar 20–30 kg S/ha como gesso agrícola');
+  if(zn_val<1.0) micronutObs.push('Zinco baixo — aplicar 2–3 kg Zn/ha (sulfato de zinco)');
+  if(b_val<0.4) micronutObs.push('Boro baixo — aplicar 1–2 kg B/ha (ácido bórico ou bórax)');
+  const micronutrientes = micronutObs.length ? micronutObs.join('; ')+'.' : 'Micronutrientes (S, Zn, B) em níveis adequados. Manter monitoramento a cada 2 anos.';
+
+  // Cronograma
+  const cronogramaMap={RS:'Soja: out–nov | Colheita: fev–mar | Trigo: abr–mai | Aveia: abr–mai',SC:'Soja: out–nov | Colheita: fev–mar | Trigo: abr–jun',PR:'Soja: out–nov | Safrinha milho: fev | Trigo: abr–mai',MT:'Soja: set–out | Milho 2ª safra: jan–fev | Colheita soja: jan–fev',MS:'Soja: out–nov | Milho 2ª safra: fev | Colheita: mar–abr',GO:'Soja: out–nov | Milho safrinha: fev | Colheita soja: fev–mar'};
+  const cronograma_plantio = cronogramaMap[uf] || `Consulte o Zoneamento Agrícola de Risco Climático (ZARC) do MAPA para ${uf||'sua região'}.`;
+
+  // Alertas e Pontos Positivos
+  const alertas=[];
+  if(ph<5.0) alertas.push(`pH muito ácido (${ph}) — calagem urgente para evitar toxidez por alumínio e perdas acima de 30%.`);
+  if(mo<10) alertas.push(`Matéria orgânica crítica (${mo} g/dm³) — solo vulnerável à erosão, seca e baixa retenção de nutrientes.`);
+  if(al>1.0) alertas.push(`Alumínio tóxico elevado (Al=${al} cmolc/dm³) — impacto direto no desenvolvimento radicular.`);
+  if(phos<10) alertas.push(`Fósforo muito baixo (${phos} mg/dm³) — principal limitante de produtividade em solos tropicais.`);
+  if(mg<0.4) alertas.push(`Magnésio deficiente (${mg} cmolc/dm³) — risco de clorose internerval nas culturas.`);
+  if(ca<1.5) alertas.push(`Cálcio baixo (${ca} cmolc/dm³) — pode limitar qualidade e enchimento de grãos.`);
+  if(fenomeno==='lanina') alertas.push('La Niña prevista — risco de veranico severo em jan-fev. Planejar plantio antecipado.');
+  if(alertas.length===0) alertas.push('Nenhum alerta crítico no momento — continue monitorando anualmente.');
+
+  const pontos_positivos=[];
+  if(ph>=5.5&&ph<=6.5) pontos_positivos.push(`pH ideal (${ph}) — ótima disponibilidade de macronutrientes e atividade microbiana.`);
+  if(mo>=25) pontos_positivos.push(`Matéria orgânica elevada (${mo} g/dm³) — excelente estrutura de solo e atividade biológica.`);
+  if(anosPD>=5) pontos_positivos.push(`${anosPD} anos em plantio direto — investimento consolidado na saúde do solo.`);
+  if(microAtivos>=3) pontos_positivos.push(`${microAtivos} grupos de microrganismos em nível alto — biologia ativa e funcional.`);
+  if(ca>=2.5&&mg>=0.8) pontos_positivos.push('Cálcio e Magnésio em níveis adequados — boa estrutura de solo e nutrição base garantida.');
+  if(pontos_positivos.length===0) pontos_positivos.push('Continue investindo no solo — melhorias levam 2–3 safras para se consolidar.');
+
+  // Próximos Passos
+  const proximos_passos=[];
+  if(ph<5.5) proximos_passos.push(`Aplicar ${calcario_recomendado} de calcário (${calcario_tipo}) antes do preparo de área.`);
+  if(mo<20) proximos_passos.push('Implantar cobertura vegetal no próximo entressafra: aveia preta + nabo forrageiro ou milheto + crotalária.');
+  if(!micro.bradyrhizobium||micro.bradyrhizobium==='baixo') proximos_passos.push('Inocular sementes de soja com Bradyrhizobium nas próximas semeaduras — economia de R$150–200/ha em N.');
+  proximos_passos.push('Executar plano de adubação conforme laudo: ' + adubacao_fosforo.substring(0,70) + '...');
+  proximos_passos.push('Realizar nova análise de solo em 2 anos para acompanhar a evolução dos parâmetros.');
+  if((relevoMap[relevo]||0)>=2) proximos_passos.push('Implantar terraços e/ou curvas de nível nas áreas onduladas para reduzir erosão.');
+
+  // Situação Geral
+  const limitantesCount = alertas.filter(a=>!a.includes('Nenhum')).length;
+  const situacao_geral = limitantesCount>=4 ? 'Propriedade com múltiplos fatores limitantes. Solo necessita correção urgente em pH, nutrição e matéria orgânica. Com manejo correto, é possível dobrar a produtividade em 3–5 safras.' : limitantesCount>=2 ? `Propriedade com bom potencial, com fatores a corrigir. Ajustes em pH, nutrição e MO podem trazer ganhos de 20–40% na produtividade.` : 'Propriedade em boas condições de produção. Otimizações pontuais podem elevar a produtividade em 10–20%.';
+
+  return {
+    situacao_geral, classificacao_ph, ph_comentario, status_fosforo, recomendacao_fosforo,
+    status_calcio, status_magnesio, relacao_caMg, calcario_recomendado, calcario_tipo,
+    materia_organica_status, cobertura_recomendada, plantio_direto_obs, erosao_risco, erosao_prevencao,
+    microorganismos_analise, inoculantes_recomendados, clima_impacto, manejos_especiais_clima,
+    culturas_recomendadas_ordem: culturasOrdem, giro_sugerido,
+    producao_soja: {
+      primeiro_terco_pct:46, segundo_terco_pct:28, terceiro_terco_pct:26,
+      meta_sc_ha: parseFloat(c.metaSoja)||60,
+      fase1_desc:'Fase vegetativa e início da floração. Formação de vagens e fixação de nódulos. Garantir P, Ca e Bradyrhizobium.',
+      fase2_desc:'Enchimento de grãos — período mais crítico para água e nutrição. Cada mm de déficit = ~0,5 sc/ha a menos.',
+      fase3_desc:'Maturação e ganho final de peso. Controlar percevejos e doenças de final de ciclo para não perder qualidade.',
+      limitante: phos<15?`Fósforo baixo (${phos} mg/dm³) — principal gargalo`:ph<5.5?`pH ácido (${ph}) limitando absorção de nutrientes`:mo<15?`MO baixa (${mo} g/dm³) reduzindo retenção de água e N`:'Sem limitante crítico nos dados atuais'
+    },
+    producao_milho: { meta_sc_ha:parseFloat(c.metaMilho)||180, comentario: culturas.includes('milho')?`Meta: ${c.metaMilho||180} sc/ha. ${k<0.2?'Potássio baixo — aplicar K no sulco para enchimento de espiga.':'Nutrição base adequada.'} Inocular com Azospirillum brasilense para ganho de 10–15 sc/ha sem custo adicional de N.`:'Milho não selecionado.' },
+    producao_trigo: { meta_sc_ha:parseFloat(c.metaTrigo)||50, comentario: culturas.includes('trigo')?`Meta: ${c.metaTrigo||50} sc/ha. ${ph<5.5?'pH limitante — corrigir antes de implantar trigo.':'pH adequado para trigo.'} Atenção à brusone em anos de La Niña.`:'Trigo não selecionado.' },
+    adubacao_nitrogenio, adubacao_fosforo, adubacao_potassio, micronutrientes, cronograma_plantio,
+    alertas, pontos_positivos, proximos_passos
+  };
+}
+
+
+function renderizarAnalise(a, d) {
+  const phPct = Math.min(Math.max(((parseFloat(d.solo?.ph||7)-3)/6)*100, 0), 100);
+  const cultlabels = {soja:'Soja',milho:'Milho',trigo:'Trigo',arroz:'Arroz',feijao:'Feijão',girassol:'Girassol',canola:'Canola',sorgo:'Sorgo',amendoim:'Amendoim',brachiaria:'Braquiária',milheto:'Milheto',crotalaria:'Crotalária',nabo:'Nabo forrageiro',aveia:'Aveia preta',azevem:'Azevém',cana:'Cana-de-açúcar',algodao:'Algodão',cafe:'Café',milho_silagem:'Milho silagem'};
+
+  const metaSoja = parseFloat(d.culturas?.metaSoja || a.producao_soja?.meta_sc_ha || 60);
+  const metaMilho = parseFloat(d.culturas?.metaMilho || a.producao_milho?.meta_sc_ha || 180);
+  const ph = parseFloat(d.solo?.ph);
+
+  let phBadge = 'badge-amarelo', phTxt = a.classificacao_ph||'';
+  if (ph >= 5.5 && ph <= 6.5) phBadge = 'badge-verde';
+  if (ph < 4.5 || ph > 7.5) phBadge = 'badge-vermelho';
+
+  const eroBadge = (a.erosao_risco||'').toLowerCase().includes('alto') ? 'badge-vermelho' : (a.erosao_risco||'').toLowerCase().includes('medio') ? 'badge-amarelo' : 'badge-verde';
+  const moBadge = (a.materia_organica_status||'').toLowerCase().includes('baixa')||((a.materia_organica_status||'').toLowerCase().includes('muito')) ? 'badge-vermelho' : 'badge-verde';
+
+  const alertasHTML = (a.alertas||[]).map(al=>`<div style="background:#fff3e0;border-left:4px solid #f9a825;padding:8px 12px;border-radius:6px;font-size:13px;color:#7b4a00;margin-bottom:6px">⚠ ${al}</div>`).join('');
+  const positHTML = (a.pontos_positivos||[]).map(p=>`<div style="background:var(--verde-suave);border-left:4px solid var(--verde-medio);padding:8px 12px;border-radius:6px;font-size:13px;color:var(--verde-escuro);margin-bottom:6px">✅ ${p}</div>`).join('');
+  const passosHTML = (a.proximos_passos||[]).map((p,i)=>`<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px"><span style="background:var(--verde-escuro);color:#fff;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">${i+1}</span><span style="font-size:13px;color:var(--texto-medio)">${p}</span></div>`).join('');
+  const cultRecHTML = (a.culturas_recomendadas_ordem||[]).map(c=>`<span class="badge badge-verde" style="margin-right:6px;margin-bottom:6px">${cultlabels[c]||c}</span>`).join('');
+
+  document.getElementById('result-data').textContent = `Gerado em: ${new Date().toLocaleDateString('pt-BR')} | Agricultor: ${currentUser.nome}`;
+  document.getElementById('result-body-content').innerHTML = `
+    <div class="result-section">
+      <div class="result-section-title">🌟 Situação Geral da Propriedade</div>
+      <p>${a.situacao_geral}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🧪 Análise de pH do Solo</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <span style="font-size:28px;font-family:'Playfair Display',serif;font-weight:700;color:var(--verde-escuro)">${ph}</span>
+        <span class="badge ${phBadge}">${phTxt}</span>
+      </div>
+      <div class="ph-bar-wrap">
+        <div class="ph-bar"><div class="ph-indicator" style="left:${phPct}%"></div></div>
+        <div class="ph-labels"><span>3 (Muito ácido)</span><span>5,5–6,5 (Ideal)</span><span>9 (Alcalino)</span></div>
+      </div>
+      <p style="margin-top:10px">${a.ph_comentario}</p>
+      <p><strong>Calcário recomendado:</strong> ${a.calcario_recomendado} — ${a.calcario_tipo}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">⚗️ Macronutrientes do Solo</div>
+      <div class="grid-2" style="margin-bottom:12px">
+        <div>
+          <div class="prog-label"><span>Fósforo (P) — <span class="badge ${a.status_fosforo?.includes('Baixo')?'badge-vermelho':a.status_fosforo?.includes('Alto')?'badge-verde':'badge-amarelo'}">${a.status_fosforo}</span></span></div>
+          <div class="prog-bar"><div class="prog-fill ${a.status_fosforo?.includes('Baixo')?'vermelho':''}" style="width:${Math.min((parseFloat(d.solo?.p)||0)/60*100,100)}%"></div></div>
+        </div>
+        <div>
+          <div class="prog-label"><span>Cálcio (Ca) — <span class="badge ${a.status_calcio?.includes('Baixo')?'badge-vermelho':'badge-verde'}">${a.status_calcio}</span></span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${Math.min((parseFloat(d.solo?.ca)||0)/6*100,100)}%"></div></div>
+        </div>
+        <div>
+          <div class="prog-label"><span>Magnésio (Mg) — <span class="badge ${a.status_magnesio?.includes('Baixo')?'badge-vermelho':'badge-verde'}">${a.status_magnesio}</span></span></div>
+          <div class="prog-bar"><div class="prog-fill amarelo" style="width:${Math.min((parseFloat(d.solo?.mg)||0)/3*100,100)}%"></div></div>
+        </div>
+        <div>
+          <div class="prog-label"><span>Matéria Orgânica (MO) — <span class="badge ${moBadge}">${a.materia_organica_status}</span></span></div>
+          <div class="prog-bar"><div class="prog-fill ${moBadge==='badge-vermelho'?'vermelho':''}" style="width:${Math.min((parseFloat(d.solo?.mo)||0)/60*100,100)}%"></div></div>
+        </div>
+      </div>
+      <p><strong>Relação Ca:Mg:</strong> ${a.relacao_caMg}</p>
+      <p style="margin-top:6px"><strong>Fósforo:</strong> ${a.recomendacao_fosforo}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🌿 Matéria Orgânica & Cobertura de Solo</div>
+      <p>${a.cobertura_recomendada}</p>
+      <p style="margin-top:8px"><strong>Plantio Direto:</strong> ${a.plantio_direto_obs}</p>
+      <p style="margin-top:8px"><span class="badge ${eroBadge}">Erosão: ${a.erosao_risco}</span> — ${a.erosao_prevencao}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🦠 Microorganismos do Solo</div>
+      <p>${a.microorganismos_analise}</p>
+      <p style="margin-top:8px"><strong>Inoculantes recomendados:</strong> ${a.inoculantes_recomendados}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🌤 Impacto Climático</div>
+      <p>${a.clima_impacto}</p>
+      <p style="margin-top:8px"><strong>Manejos especiais:</strong> ${a.manejos_especiais_clima}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🌾 Culturas & Giro Sugerido</div>
+      <p><strong>Ordem recomendada:</strong> ${cultRecHTML}</p>
+      <p style="margin-top:8px">${a.giro_sugerido}</p>
+      <p style="margin-top:8px"><strong>Época de plantio:</strong> ${a.cronograma_plantio}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🫘 Produtividade — Soja (Meta: ${metaSoja} sc/ha)</div>
+      <div class="terco-grid">
+        <div class="terco-card terco-1">
+          <div class="terco-num">46%</div>
+          <div class="terco-label">1º Terço — Enchimento</div>
+          <div class="terco-desc">${a.producao_soja?.fase1_desc||'Fase vegetativa + início da floração. Formação de vagens e nódulos.'}</div>
+        </div>
+        <div class="terco-card terco-2">
+          <div class="terco-num">28%</div>
+          <div class="terco-label">2º Terço — Granação</div>
+          <div class="terco-desc">${a.producao_soja?.fase2_desc||'Enchimento de grãos. Período crítico para água e nutrição.'}</div>
+        </div>
+        <div class="terco-card terco-3">
+          <div class="terco-num">26%</div>
+          <div class="terco-label">3º Terço — Maturação</div>
+          <div class="terco-desc">${a.producao_soja?.fase3_desc||'Maturação e ganho final de peso de grão.'}</div>
+        </div>
+      </div>
+      <p style="margin-top:8px"><strong>Principal limitante atual:</strong> ${a.producao_soja?.limitante||'Verificar dados'}</p>
+    </div>
+
+    ${d.culturas?.lista?.includes('milho') ? `<div class="result-section">
+      <div class="result-section-title">🌽 Produtividade — Milho (Meta: ${metaMilho} sc/ha)</div>
+      <p>${a.producao_milho?.comentario||'Dados insuficientes.'}</p>
+    </div>` : ''}
+
+    ${d.culturas?.lista?.includes('trigo') ? `<div class="result-section">
+      <div class="result-section-title">🌾 Produtividade — Trigo (Meta: ${d.culturas?.metaTrigo||50} sc/ha)</div>
+      <p>${a.producao_trigo?.comentario||'Dados insuficientes.'}</p>
+    </div>` : ''}
+
+    <div class="result-section">
+      <div class="result-section-title">🌱 Plano de Adubação</div>
+      <p><strong>Nitrogênio:</strong> ${a.adubacao_nitrogenio}</p>
+      <p style="margin-top:6px"><strong>Fósforo:</strong> ${a.adubacao_fosforo}</p>
+      <p style="margin-top:6px"><strong>Potássio:</strong> ${a.adubacao_potassio}</p>
+      <p style="margin-top:6px"><strong>Micronutrientes:</strong> ${a.micronutrientes}</p>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">⚠ Alertas</div>
+      ${alertasHTML || '<p>Nenhum alerta crítico identificado.</p>'}
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">✅ Pontos Positivos</div>
+      ${positHTML || '<p>Cadastre mais dados para identificar pontos positivos.</p>'}
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">🚀 Próximos Passos</div>
+      ${passosHTML}
+    </div>
+
+    <div style="text-align:center;padding:1rem;background:var(--verde-suave);border-radius:12px;margin-top:1rem">
+      <div style="font-size:13px;color:var(--texto-suave)">Relatório gerado pelo AgroInteligente com IA | ${new Date().toLocaleDateString('pt-BR')}</div>
+      <div style="font-size:12px;color:var(--texto-suave);margin-top:4px">Consulte sempre um Engenheiro Agrônomo para implementação técnica.</div>
+    </div>
+  `;
+
+  document.getElementById('resultado-analise').classList.add('visible');
+}
+
+// ===== STORAGE =====
+function salvarNoStorage() {
+  if (!currentUser) return;
+  usuarios[currentUser.email] = currentUser;
+  localStorage.setItem('agro_usuarios', JSON.stringify(usuarios));
+}
+
+function carregarDadosSalvos() {
+  const d = currentUser?.dados || {};
+  const p = d.propriedade;
+  if (p) {
+    document.getElementById('prop-ha').value = p.ha||'';
+    document.getElementById('prop-nome').value = p.nome||'';
+    document.getElementById('prop-uf').value = p.uf||'';
+    document.getElementById('prop-relevo').value = p.relevo||'';
+    document.getElementById('prop-sistema').value = p.sistema||'';
+    document.getElementById('prop-anos-pd').value = p.anosPD||'';
+    document.getElementById('prop-giro').value = p.giro||'';
+    document.getElementById('prop-irrigacao').value = p.irrigacao||'';
+  }
+  const s = d.solo;
+  if (s) {
+    document.getElementById('solo-ph').value = s.ph||'';
+    document.getElementById('solo-mo').value = s.mo||'';
+    document.getElementById('solo-p').value = s.p||'';
+    document.getElementById('solo-k').value = s.k||'';
+    document.getElementById('solo-ca').value = s.ca||'';
+    document.getElementById('solo-mg').value = s.mg||'';
+    document.getElementById('solo-al').value = s.al||'';
+    document.getElementById('solo-ctc').value = s.ctc||'';
+    document.getElementById('solo-v').value = s.v||'';
+  }
+  const c = d.culturas;
+  if (c) {
+    culturasSelecionadas = c.lista||[];
+    document.getElementById('meta-soja').value = c.metaSoja||'';
+    document.getElementById('meta-milho').value = c.metaMilho||'';
+    document.getElementById('meta-trigo').value = c.metaTrigo||'';
+    document.getElementById('epoca-plantio').value = c.epoca||'';
+    culturasSelecionadas.forEach(nome => {
+      document.querySelectorAll('.cultura-tag').forEach(tag => {
+        if (tag.getAttribute('onclick')?.includes("'"+nome+"'")) tag.classList.add('selected');
+      });
+    });
+    const labelMap = {soja:'Soja',milho:'Milho',trigo:'Trigo',arroz:'Arroz',feijao:'Feijão',girassol:'Girassol',canola:'Canola',sorgo:'Sorgo',amendoim:'Amendoim',brachiaria:'Braquiária',milheto:'Milheto',crotalaria:'Crotalária',nabo:'Nabo forrageiro',aveia:'Aveia preta',azevem:'Azevém',cana:'Cana-de-açúcar',algodao:'Algodão',cafe:'Café',milho_silagem:'Milho silagem'};
+    const div = document.getElementById('culturas-selecionadas');
+    div.textContent = culturasSelecionadas.length ? culturasSelecionadas.map(c=>labelMap[c]||c).join(', ') : 'Nenhuma selecionada ainda.';
+  }
+  const cl = d.clima;
+  if (cl) {
+    document.getElementById('clima-precip').value = cl.precip||'';
+    document.getElementById('clima-temp').value = cl.temp||'';
+    document.getElementById('clima-fenomeno').value = cl.fenomeno||'';
+    document.getElementById('clima-geada').value = cl.geada||'';
+    document.getElementById('clima-deficit').value = cl.deficit||'';
+    document.getElementById('clima-erosao').value = cl.erosao||'';
+    if (cl.fenomeno) mostrarInfoClima();
+  }
+  atualizarStats();
+}
+
+function atualizarStats() {
+  const ha = document.getElementById('prop-ha')?.value || 0;
+  const ph = document.getElementById('solo-ph')?.value || '—';
+  const mo = document.getElementById('solo-mo')?.value || 0;
+  document.getElementById('stat-ha').textContent = ha || '0';
+  document.getElementById('stat-culturas').textContent = culturasSelecionadas.length;
+  document.getElementById('stat-ph').textContent = ph || '—';
+  document.getElementById('stat-mo').textContent = mo ? mo+' g' : '0%';
+}
+</script>
+</body>
+</html>
